@@ -1,0 +1,11 @@
+# Local environment config (never commit)
+.env
+
+# Dependencies
+node_modules/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
