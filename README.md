@@ -1,44 +1,72 @@
-# Bazy-danych-projekt
-Autorzy:
-Agnieszka Mirosław
-Mateusz Nowak
+# Booking System API
 
-Technologie: MongoDB, Node.js + Express
+REST API for booking shared resources such as conference rooms, rooms and coworking desks.
+Built as a university databases project.
 
-System Rezerwacji Sal / Pokoi / Stanowisk Pracy – MongoDB + Node.js
-Aplikacja backendowa do zarządzania rezerwacjami zasobów w firmie (np. sal konferencyjnych, pokoi, stanowisk). Projekt realizuje pełen zestaw operacji CRUD oraz wspiera zaawansowane mechanizmy kontroli dostępu i raportowania.
+**Tech stack:** Node.js, Express, MongoDB, Mongoose
 
-🔧 Technologie:
-MongoDB (NoSQL, z replikacją i transakcjami)
+## Features
 
-Mongoose (modelowanie danych)
+- **CRUD** for users, resources, reservations and logs
+- **Transactional booking** (`POST /api/reservations/safe`): checks the user's daily limit and time conflicts
+  inside a MongoDB transaction, so overlapping reservations are rejected
+- **Aggregation reports**: resource usage statistics and user activity
 
-Express.js (REST API)
+## API overview
 
-Node.js
+| Resource      | Endpoints                                                     |
+|---------------|---------------------------------------------------------------|
+| Users         | `GET/POST /api/users`, `GET/PUT/DELETE /api/users/:id`        |
+| Resources     | `GET/POST /api/resources`, `GET/PUT/DELETE /api/resources/:id` |
+| Reservations  | `GET/POST /api/reservations`, `GET/PUT/DELETE /api/reservations/:id`, `POST /api/reservations/safe` |
+| Logs          | `GET/POST /api/logs`, `GET/PUT/DELETE /api/logs/:id`          |
+| Reports       | `GET /api/reports/usage`, `GET /api/reports/user-activity`    |
 
-📦 Funkcjonalności:
-Zarządzanie użytkownikami, zasobami i rezerwacjami (CRUD)
+## Getting started
 
-Operacje rezerwacji z użyciem transakcji:
+Requirements: Node.js 18+ and a running MongoDB instance.
 
-Sprawdzanie konfliktów czasowych
+```bash
+cd bazy2_projekt/booking-system-backend
+npm install
+npm run dev     # or: npm start
+```
 
-Ograniczenia dzienne dla użytkowników
+The API runs at `http://localhost:5000`.
 
-Blokowanie „wyścigu” o ten sam zasób
+> MongoDB transactions require a replica set. For the `/safe` endpoint, run MongoDB as a
+> single-node replica set (e.g. `mongod --replSet rs0`, then `rs.initiate()` in `mongosh`).
 
-Raporty agregujące:
+### Configuration (optional)
 
-Najczęściej rezerwowane zasoby
+With no configuration, the app connects to `mongodb://127.0.0.1:27017/booking_system` on port `5000`.
+To change this, copy the template and fill in the values:
 
-Aktywność użytkowników
+```bash
+cp .env.example .env
+```
 
-Logowanie wszystkich operacji (logi systemowe)
+| Variable    | Description               | Default                                     |
+|-------------|---------------------------|---------------------------------------------|
+| `MONGO_URI` | MongoDB connection string | `mongodb://127.0.0.1:27017/booking_system`  |
+| `PORT`      | HTTP port                 | `5000`                                      |
 
-✅ Bezpieczeństwo i wydajność:
-Walidacja JSON Schema
+`.env` is git-ignored. Keep credentials there, never in the code.
 
-Indeksy przyspieszające filtrowanie i wykrywanie kolizji
+## Project structure
 
-Obsługa transakcji z rollbackiem
+```
+bazy2_projekt/
+├── booking-system-backend/
+│   └── src/
+│       ├── config/db.js      # MongoDB connection
+│       ├── models/           # Mongoose schemas
+│       ├── routes/           # Express routers
+│       └── server.js         # App entry point
+└── lab4-BD-MongoDB-cw (_sprawozdanie_koncowe.md   # Project report (in Polish)
+```
+
+## Authors
+
+- Agnieszka Mirosław
+- Mateusz Nowak
